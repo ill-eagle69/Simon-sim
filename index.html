@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Klasės Simuliatorius</title>
+<style>
+body{
+background:#111;
+color:white;
+font-family:sans-serif;
+text-align:center;
+}
+#game{
+width:450px;
+height:500px;
+margin:auto;
+padding:20px;
+border:2px solid white;
+background-image: url('bg/classroom.png');
+background-size: cover;
+background-position: center;
+}
+button{
+display:block;
+margin:10px auto;
+padding:10px;
+font-size:16px;
+cursor:pointer;
+}
+#avatar{
+margin:10px;
+width:140px;
+}
+#character{
+margin:10px;
+width:180px;
+}
+</style>
+</head>
+<body>
+<div id="game">
+<h2>Klasės Simuliatorius</h2>
+<img id="avatar" src="">
+<img id="character" src="">
+<p id="text"></p>
+<div id="choices"></div>
+</div>
+<script>
+let gender="", avatar="", companion="", liamMood=0
+const PLAYER_AVATAR_FOLDER="avatars/"
+
+// --- Helpers ---
+function clearChoices(){document.getElementById("choices").innerHTML=""}
+function choice(text,func){let btn=document.createElement("button"); btn.innerText=text; btn.onclick=func; document.getElementById("choices").appendChild(btn)}
+function setText(t){document.getElementById("text").innerText=t}
+function setAvatar(img){document.getElementById("avatar").src=img}
+function setCharacter(img){document.getElementById("character").src=img}
+
+// --- Save / Load ---
+function saveData(){localStorage.setItem("sim_data", JSON.stringify({gender, avatar, companion, liamMood}))}
+function loadData(){
+  let data = JSON.parse(localStorage.getItem("sim_data"))
+  if(data){gender=data.gender; avatar=data.avatar; companion=data.companion; liamMood=data.liamMood; return true}
+  return false
+}
+function resetData(){localStorage.removeItem("sim_data"); gender=""; avatar=""; companion=""; liamMood=0; start()}
+
+// --- Start ---
+function start(){
+setCharacter(""); setAvatar(""); clearChoices()
+if(!gender || !avatar){
+setText("Pasirink savo lytį:")
+choice("Vyras",()=>{gender="male"; saveData(); selectAvatar()})
+choice("Moteris",()=>{gender="female"; saveData(); selectAvatar()})
+choice("Išvalyti duomenis", resetData)
+}else{selectCompanion()}
+}
+
+// --- Avatar Selection ---
+function selectAvatar(){
+clearChoices(); setText("Pasirink savo Simoną:")
+if(gender==="male"){
+choice("male_1",()=>{avatar=PLAYER_AVATAR_FOLDER+"male_1.png"; setAvatar(avatar); saveData(); selectCompanion()})
+choice("male_2",()=>{avatar=PLAYER_AVATAR_FOLDER+"male_2.png"; setAvatar(avatar); saveData(); selectCompanion()})
+}
+if(gender==="female"){
+choice("woman_1",()=>{avatar=PLAYER_AVATAR_FOLDER+"woman_1.png"; setAvatar(avatar); saveData(); selectCompanion()})
+choice("woman_2",()=>{avatar=PLAYER_AVATAR_FOLDER+"woman_2.png"; setAvatar(avatar); saveData(); selectCompanion()})
+}
+choice("Išvalyti duomenis", resetData)
+}
+
+// --- Companion Selection ---
+function selectCompanion(){
+clearChoices(); setCharacter(""); setText("Pasirink kompanioną:")
+choice("Liam",()=>{companion="Liam"; saveData(); liamScene1()})
+choice("Katya (W.I.P)",()=>{setText("Katya istorija dar kuriama..."); clearChoices(); choice("Atgal", selectCompanion)})
+choice("Hotdogger (W.I.P)",()=>{setText("Hotdogger dar nepridėtas..."); clearChoices(); choice("Atgal", selectCompanion)})
+choice("Fatty fat fat (W.I.P)",()=>{setText("Fatty ateis vėliau..."); clearChoices(); choice("Atgal", selectCompanion)})
+choice("Džeizon (W.I.P)",()=>{setText("Džeizon dar kuriamas..."); clearChoices(); choice("Atgal", selectCompanion)})
+choice("Penė-Džein (W.I.P)",()=>{setText("Penė-Džein dar kuriama..."); clearChoices(); choice("Atgal", selectCompanion)})
+choice("Išvalyti duomenis", resetData)
+}
+
+// --- Liam Dialogue Tree ---
+function liamScene1(){
+clearChoices(); setCharacter("liam/liam_neutral.png"); setText("Tu prieini prie Liam. Jis nieko nesako.")
+choice("Parodyti 👍", ()=>{liamMood++; saveData(); liamScene2A()})
+choice("Pasakyti 'Labas'", ()=>{liamMood++; saveData(); liamScene2B()})
+choice("Įžeisti Fatty", ()=>{liamMood--; saveData(); liamScene2C()})
+choice("Keistai spoksoti", ()=>{liamMood--; saveData(); liamScene2C()})
+choice("Išvalyti duomenis", resetData)
+}
+
+// Scene 2A: friendly
+function liamScene2A(){
+clearChoices(); setCharacter("liam/liam_yes.png"); setText("Liam šypsosi šiek tiek.")
+choice("Paklausti ar nori sėdėti kartu", liamWin)
+choice("Pasiūlyti pabėgti iš pamokos", liamNeutralEnding)
+choice("Išvalyti duomenis", resetData)
+}
+
+// Scene 2B: polite
+function liamScene2B(){
+clearChoices(); setCharacter("liam/liam_blush.png"); setText("Liam šiek tiek parausta.")
+choice("Parodyti 👍", liamScene2A)
+choice("Įžeisti Fatty", badEnding)
+choice("Išvalyti duomenis", resetData)
+}
+
+// Scene 2C: rude/weird
+function liamScene2C(){
+clearChoices(); setCharacter("liam/liam_disgust.png"); setText("Liam atrodo suerzintas.")
+choice("Pasakyti 'Labas'", liamScene2B)
+choice("Parodyti 👍", liamScene2A)
+choice("Įžeisti Fatty", badEnding)
+choice("Išvalyti duomenis", resetData)
+}
+
+// --- Endings ---
+function liamWin(){
+clearChoices(); setCharacter("liam/liam_win.png"); setText("PERGALĖ! Liam tavęs priima kaip draugą. Fatty žiūri iš tolo.")
+choice("Grįžti į pradžią", start)
+choice("Išvalyti duomenis", resetData)
+}
+
+function liamNeutralEnding(){
+clearChoices(); setCharacter("liam/liam_no.png"); setText("Liam nusprendė nieko nedaryti. Gal kitą kartą.")
+choice("Grįžti į pradžią", start)
+choice("Išvalyti duomenis", resetData)
+}
+
+function badEnding(){
+clearChoices(); setCharacter("liam/liam_mad.png"); setText("BLOGA PABAIGA: Tu įžeidei Fatty. Liam nekenčia tavęs.")
+choice("Pradėti iš naujo", start)
+choice("Išvalyti duomenis", resetData)
+}
+
+// --- Load or Start ---
+if(!loadData()){start()}
+else{
+setAvatar(avatar)
+setText("Duomenys užkrauti! Paspauskite Liam, kad tęstumėte.")
+clearChoices()
+choice("Liam", liamScene1)
+choice("Išvalyti duomenis", resetData)
+}
+</script>
+</body>
+</html>
