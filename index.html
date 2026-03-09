@@ -16,7 +16,7 @@ height:500px;
 margin:auto;
 padding:20px;
 border:2px solid white;
-background-image: url('bg/classroom.png');
+background-image: url('classroom.png');
 background-size: cover;
 background-position: center;
 }
@@ -47,7 +47,6 @@ width:180px;
 </div>
 <script>
 let gender="", avatar="", companion="", liamMood=0
-const PLAYER_AVATAR_FOLDER="avatars/"
 
 // --- Helpers ---
 function clearChoices(){document.getElementById("choices").innerHTML=""}
@@ -80,12 +79,12 @@ choice("Išvalyti duomenis", resetData)
 function selectAvatar(){
 clearChoices(); setText("Pasirink savo Simoną:")
 if(gender==="male"){
-choice("male_1",()=>{avatar=PLAYER_AVATAR_FOLDER+"male_1.png"; setAvatar(avatar); saveData(); selectCompanion()})
-choice("male_2",()=>{avatar=PLAYER_AVATAR_FOLDER+"male_2.png"; setAvatar(avatar); saveData(); selectCompanion()})
+choice("male_1",()=>{avatar="male_1.png"; setAvatar(avatar); saveData(); selectCompanion()})
+choice("male_2",()=>{avatar="male_2.png"; setAvatar(avatar); saveData(); selectCompanion()})
 }
 if(gender==="female"){
-choice("woman_1",()=>{avatar=PLAYER_AVATAR_FOLDER+"woman_1.png"; setAvatar(avatar); saveData(); selectCompanion()})
-choice("woman_2",()=>{avatar=PLAYER_AVATAR_FOLDER+"woman_2.png"; setAvatar(avatar); saveData(); selectCompanion()})
+choice("woman_1",()=>{avatar="woman_1.png"; setAvatar(avatar); saveData(); selectCompanion()})
+choice("woman_2",()=>{avatar="woman_2.png"; setAvatar(avatar); saveData(); selectCompanion()})
 }
 choice("Išvalyti duomenis", resetData)
 }
@@ -104,7 +103,7 @@ choice("Išvalyti duomenis", resetData)
 
 // --- Liam Dialogue Tree ---
 function liamScene1(){
-clearChoices(); setCharacter("liam/liam_neutral.png"); setText("Tu prieini prie Liam. Jis nieko nesako.")
+clearChoices(); setCharacter("liam_neutral.png"); setText("Tu prieini prie Liam. Jis nieko nesako.")
 choice("Parodyti 👍", ()=>{liamMood++; saveData(); liamScene2A()})
 choice("Pasakyti 'Labas'", ()=>{liamMood++; saveData(); liamScene2B()})
 choice("Įžeisti Fatty", ()=>{liamMood--; saveData(); liamScene2C()})
@@ -114,7 +113,7 @@ choice("Išvalyti duomenis", resetData)
 
 // Scene 2A: friendly
 function liamScene2A(){
-clearChoices(); setCharacter("liam/liam_yes.png"); setText("Liam šypsosi šiek tiek.")
+clearChoices(); setCharacter("liam_yes.png"); setText("Liam šypsosi šiek tiek.")
 choice("Paklausti ar nori sėdėti kartu", liamWin)
 choice("Pasiūlyti pabėgti iš pamokos", liamNeutralEnding)
 choice("Išvalyti duomenis", resetData)
@@ -122,7 +121,7 @@ choice("Išvalyti duomenis", resetData)
 
 // Scene 2B: polite
 function liamScene2B(){
-clearChoices(); setCharacter("liam/liam_blush.png"); setText("Liam šiek tiek parausta.")
+clearChoices(); setCharacter("liam_blush.png"); setText("Liam šiek tiek parausta.")
 choice("Parodyti 👍", liamScene2A)
 choice("Įžeisti Fatty", badEnding)
 choice("Išvalyti duomenis", resetData)
@@ -130,7 +129,7 @@ choice("Išvalyti duomenis", resetData)
 
 // Scene 2C: rude/weird
 function liamScene2C(){
-clearChoices(); setCharacter("liam/liam_disgust.png"); setText("Liam atrodo suerzintas.")
+clearChoices(); setCharacter("liam_disgust.png"); setText("Liam atrodo suerzintas.")
 choice("Pasakyti 'Labas'", liamScene2B)
 choice("Parodyti 👍", liamScene2A)
 choice("Įžeisti Fatty", badEnding)
@@ -139,19 +138,19 @@ choice("Išvalyti duomenis", resetData)
 
 // --- Endings ---
 function liamWin(){
-clearChoices(); setCharacter("liam/liam_win.png"); setText("PERGALĖ! Liam tavęs priima kaip draugą. Fatty žiūri iš tolo.")
+clearChoices(); setCharacter("liam_win.png"); setText("PERGALĖ! Liam tavęs priima kaip draugą. Fatty žiūri iš tolo.")
 choice("Grįžti į pradžią", start)
 choice("Išvalyti duomenis", resetData)
 }
 
 function liamNeutralEnding(){
-clearChoices(); setCharacter("liam/liam_no.png"); setText("Liam nusprendė nieko nedaryti. Gal kitą kartą.")
+clearChoices(); setCharacter("liam_no.png"); setText("Liam nusprendė nieko nedaryti. Gal kitą kartą.")
 choice("Grįžti į pradžią", start)
 choice("Išvalyti duomenis", resetData)
 }
 
 function badEnding(){
-clearChoices(); setCharacter("liam/liam_mad.png"); setText("BLOGA PABAIGA: Tu įžeidei Fatty. Liam nekenčia tavęs.")
+clearChoices(); setCharacter("liam_mad.png"); setText("BLOGA PABAIGA: Tu įžeidei Fatty. Liam nekenčia tavęs.")
 choice("Pradėti iš naujo", start)
 choice("Išvalyti duomenis", resetData)
 }
